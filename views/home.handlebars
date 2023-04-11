@@ -1,1 +1,62 @@
 <h1>test</h1>
+
+<a href=""></a>
+
+<input type="button" onclick="window.location.href='http://localhost:3000/auth/spotify';" value="Spotify Auth" />
+
+<input type="button" onclick="window.location.href='http://localhost:3000/list/spotify';" value="List Spotify" />
+
+<hr>
+
+{{#if accessToken}}
+    <h4> Spotify Tokens </h4>
+
+    <h6>Access Token: <span>{{accessToken}}</span> </h6>
+    <br>
+    <h6>Refresh Token: <span>{{refreshToken}}</span> </h6>
+    <br>
+    <h6>Expires In: <span>{{expires_in}}</span> </h6>
+    <br>
+    <h6>Profile Token: <span>{{profile}}</span> </h6>
+    <br>
+    <h6>Profile ID: <span>{{id}}</span></h6>
+
+<hr>
+<h4> Profile Data</h4>
+
+    <div id="spotify">
+
+    </div>
+    {{profileData}}
+
+<hr>
+{{!-- <h4>Playlist Data</h4>
+{{playlistData}} --}}
+{{/if}}
+
+{{#if spotifyPlaylist}}
+<script>
+    {{!-- console.log("Starting script") --}}
+    const playlist =JSON.parse(decodeURIComponent("{{{spotifyPlaylist}}}"))
+    for(const elem of playlist){
+        {{!-- console.log(elem["name"]) --}}
+        let imgUrl = elem["images"][0]["url"]
+        let title = elem["name"]
+        let trackCount = elem["tracks"]["total"]
+
+       
+        {{!-- document.getElementById("spotify").innerHTML += JSON.stringify(elem) + "<br>" --}}
+        document.getElementById("spotify").innerHTML +=  `<div class="container">
+      
+      <div class="text">
+        <h1>${title}(${trackCount} Tracks)</h1>
+      </div>
+      <div class="image">
+        <img src="${imgUrl}">
+      </div>
+    </div>`
+
+    }      
+
+</script>
+{{/if}}
