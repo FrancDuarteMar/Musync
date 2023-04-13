@@ -130,3 +130,7 @@ dist
 .credentials.*
 *.p8
 *.p8
+scratch/sAccessToken
+scratch/sPlaylist
+scratch/sPlaylistRet
+scratch/sRefreshToken
