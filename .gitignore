@@ -134,3 +134,7 @@ scratch/sAccessToken
 scratch/sPlaylist
 scratch/sPlaylistRet
 scratch/sRefreshToken
+scratch/sAccessToken
+scratch/sPlaylist
+scratch/sPlaylistRet
+scratch/sRefreshToken
