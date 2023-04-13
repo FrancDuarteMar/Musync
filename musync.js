@@ -1,5 +1,6 @@
 const express = require("express")
 const handlers = require("./lib/handlers")
+const Spotify = require("./lib/spotify")
 const expressSession = require("express-session")
 const {
     credentials
@@ -26,16 +27,10 @@ app.set('view engine', 'handlebars')
 app.use(express.static(__dirname + '/public'))
 app.disable("x-powered-by")
 
+// localStorage.clear()
+
 var authCallbackPath = '/auth/spotify/callback';
 
-function printArr(arr) {
-    let str = "";
-    for (let item of arr) {
-        if (Array.isArray(item)) str += printArr(item);
-        else str += item + ", ";
-    }
-    return str;
-}
 app.use(expressSession({
     resave: true,
     saveUninitialized: true,
@@ -77,18 +72,13 @@ passport.use(
                 "profile": profile
 
             });
+            
             localStorage.setItem("sAccessToken", accessToken)
             localStorage.setItem("sRefreshToken", refreshToken)
             localStorage.setItem("sExpires", expires_in)
             localStorage.setItem("sProfile", JSON.stringify(profile))
 
-            // console.log("local Storage access token: "+ localStorage.getItem("sAccessToken"))
-            // console.log("Access Token: " + accessToken)
-            // console.log("Refresh Token: " + refreshToken)
-            // console.log("Profile: " + profile)
-
             process.nextTick(function () {
-
                 return done(null, profile);
             });
 
@@ -96,97 +86,32 @@ passport.use(
     )
 );
 
-
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 app.get('/', handlers.home)
 
-
 app.use('/list/spotify', function (req, res, next) {
-    // res.redirect('/')
+
     next()
 })
 
-async function getProfile(accessToken) {
-
-    let response = await fetch('https://api.spotify.com/v1/me', {
-        headers: {
-            Authorization: 'Bearer ' + accessToken
-        }
-    });
-
-    let data = await response.json();
-    return data;
-}
-
-
-async function getPlaylists(accessToken, userID, offset = 0, url, playlists = []) {
-    // console.log(userID)
-    // console.log(accessToken)
-
-    if (url == null) {
-        var response = await fetch(`https://api.spotify.com/v1/users/${userID}/playlists?offset=${offset}&limit=50`, {
-            headers: {
-                Authorization: 'Bearer ' + accessToken
-            }
-        })
-    } else {
-        var response = await fetch(url, {
-            headers: {
-                Authorization: 'Bearer ' + accessToken
-            }
-        })
-    }
-
-    let thisResp = await response
-    // let item = await thisResp.text() 
-    let data = await thisResp.json();
-    // playlists.push(data['items'])
-    for (const elem of data['items']) {
-        playlists.push(elem)
-        playlistSpotify.push(elem)
-    }
-
-    // console.log("Size of playlist data stuff: " + playlists.length)
-    // console.log("Type: "+ typeof data["items"])
-    // console.log("Length: "+ data["items"].length)
-
-    // if(offset = 0){
-    //     localStorage.setItem("sPlaylist", data["items"])
-    //     console.log("Type: "+ typeof localStorage.getItem("sPlaylist"))
-    // }
-    // else{
-    //     console.log("Type: "+typeof localStorage.getItem("sPlaylist"))
-    //     // localStorage.getItem("sPlaylist").push(data['items'])
-    // }
-    if (data['next'] != null) {
-        // console.log("MORE!!!!!!!!!!!!!!!!!!!!")
-        getPlaylists(accessToken, userID, offset + data['limit'], url, playlists)
-    } else {
-        localStorage.setItem("sPlaylist", JSON.stringify(playlists))
-    }
-    // console.log(data)
-    // console.log("Playlist: ", data)
-    return data;
-}
 
 app.get("/list/spotify", function (req, res) {
     // const spotifyData = await getProfile(localStorage.getItem("sAccessToken"))
 
-    getProfile(localStorage.getItem("sAccessToken")).then(
+    Spotify.getProfile(localStorage.getItem("sAccessToken")).then(
         result => {
             localStorage.setItem("sID", result["id"])
         }).
     then((resultPlaylist) => {
-        return getPlaylists(localStorage.getItem("sAccessToken"), localStorage.getItem("sID"))
+        return Spotify.getPlaylists(localStorage.getItem("sAccessToken"), localStorage.getItem("sID"),playlistSpotify)
     }).
     then((resPlay) => {
             let jsonPlaylist = {}
-            localStorage.setItem("sPlaylistRet", JSON.stringify(resPlay))
+            localStorage.setItem("https://open.spotify.com/playlist/0zi3jm9as2u0q0nOGJC2KC", JSON.stringify(resPlay))
             let count = 0
-            for(const elem of playlistSpotify){
+            for (const elem of playlistSpotify) {
                 jsonPlaylist[count] = elem
                 // console.log(elem)
             }
@@ -205,7 +130,7 @@ app.get("/list/spotify", function (req, res) {
                 profile: JSON.stringify(localStorage.getItem("sProfile")),
                 id: localStorage.getItem("sID"),
                 profileData: JSON.stringify((playlistSpotify[0])),
-                spotifyPlaylist:  encodeURIComponent(JSON.stringify(playlistSpotify))
+                spotifyPlaylist: encodeURIComponent(JSON.stringify(playlistSpotify))
             })
         ).catch(err => {
             console.log(err);
@@ -250,22 +175,22 @@ app.get('/logout', function (req, res) {
 });
 
 
-app.post("/applelogin", function(req,res){
+app.post("/applelogin", function (req, res) {
     console.log(req.body)
-    localStorage.setItem("appleToken",req.body.appleToken)
+    localStorage.setItem("appleToken", req.body.appleToken)
     res.sendStatus(400)
-    
+
 })
-app.get("/apple", function(req,res){
-    
+app.get("/apple", function (req, res) {
+
     // console.log(req.body["apple"])
-    
-    res.render("apple",{
+
+    res.render("apple", {
         devToken: credentials.apple.devToken
-        })
+    })
 })
 
-async function appleMusicTest(){
+async function appleMusicTest() {
     var response = await fetch(`https://api.music.apple.com/v1/catalog/us/search?types=songs&term=Soledad+y+el+mar`, {
         headers: {
             Authorization: 'Bearer ' + credentials.apple.devToken,
@@ -283,10 +208,10 @@ async function appleMusicTest(){
 
     console.log(data.results.songs.data[0].id)
     return data
-    
+
 }
-app.get("/loadapple",function(req,res){
-    
+app.get("/loadapple", function (req, res) {
+
     res.send(appleMusicTest())
 })
 
