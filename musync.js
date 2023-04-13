@@ -207,15 +207,6 @@ app.get("/list/spotify", function (req, res) {
             console.log(err);
             res.sendStatus(501);
         })
-
-    // res.render("home",{
-    //     accessToken: localStorage.getItem("sAccessToken"),
-    //     refreshToken: localStorage.getItem("sRefreshToken"),
-    //     expires_in: localStorage.getItem("sExpires"),
-    //     profile: JSON.stringify(localStorage.getItem("sProfile")),
-    //     profileData: JSON.stringify(spotifyData)
-    // })
-    // console.log("Done!")
 })
 
 app.get(

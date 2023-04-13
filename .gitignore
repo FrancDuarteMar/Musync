@@ -128,3 +128,5 @@ dist
 
 
 .credentials.*
+*.p8
+*.p8
