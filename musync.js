@@ -17,6 +17,10 @@ const SpotifyStrategy = require('passport-spotify').Strategy;
 const app = express()
 const port = process.env.PORT || 3000
 
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
+
 app.set("view cache", true)
 app.set('view engine', 'handlebars')
 app.use(express.static(__dirname + '/public'))
@@ -244,6 +248,47 @@ app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
 });
+
+
+app.post("/applelogin", function(req,res){
+    console.log(req.body)
+    localStorage.setItem("appleToken",req.body.appleToken)
+    res.sendStatus(400)
+    
+})
+app.get("/apple", function(req,res){
+    
+    // console.log(req.body["apple"])
+    
+    res.render("apple",{
+        devToken: credentials.apple.devToken
+        })
+})
+
+async function appleMusicTest(){
+    var response = await fetch(`https://api.music.apple.com/v1/catalog/us/search?types=songs&term=Soledad+y+el+mar`, {
+        headers: {
+            Authorization: 'Bearer ' + credentials.apple.devToken,
+            "Media-User-Token": localStorage.getItem("appleToken")
+        }
+    })
+    let thisResp = await response
+    // let item = await thisResp.text() 
+    let data = await thisResp.json();
+    // playlists.push(data['items'])
+    // for (const elem of data['items']) {
+    //     playlists.push(elem)
+    //     playlistSpotify.push(elem)
+    // }
+
+    console.log(data.results.songs.data[0].id)
+    return data
+    
+}
+app.get("/loadapple",function(req,res){
+    
+    res.send(appleMusicTest())
+})
 
 
 if (require.main === module) {

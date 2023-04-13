@@ -1,0 +1,43 @@
+<script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" async>
+</script>
+
+<script>
+    document.addEventListener('musickitloaded', async function () {
+        // Call configure() to configure an instance of MusicKit on the Web.
+        try {
+            await MusicKit.configure({
+                developerToken: '{{devToken}}',
+                app: {
+                    name: 'My Cool Web App',
+                    build: '1978.4.1',
+                },
+            });
+        } catch (err) {
+            // Handle configuration error
+        }
+
+        // MusicKit instance is available
+        const music = MusicKit.getInstance();
+        const token = await music.authorize();
+
+        {{!-- localStorage.getItem("music.{{teamID}}.media-user-token") --}}
+        console.log("token: "+ token)
+        
+        await fetch("/applelogin",{
+            method: "POST",
+            headers:{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+
+            },
+            body: JSON.stringify({
+                appleToken:token
+            })
+        }).then(function(res) {
+            console.log("Sent data")
+            console.log(res)
+        })
+
+
+    });
+</script>
