@@ -1,6 +1,7 @@
 const express = require("express")
 const handlers = require("./lib/handlers")
 const Spotify = require("./lib/spotify")
+const Apple = require("./lib/apple")
 const expressSession = require("express-session")
 const {
     credentials
@@ -181,7 +182,7 @@ app.post("/applelogin", function (req, res) {
     res.sendStatus(400)
 
 })
-app.get("/apple", function (req, res) {
+app.get("/auth/apple", function (req, res) {
 
     // console.log(req.body["apple"])
 
@@ -206,7 +207,9 @@ async function appleMusicTest() {
     //     playlistSpotify.push(elem)
     // }
 
-    console.log(data.results.songs.data[0].id)
+    console.log(data.results.songs.data[0])
+
+    // console.log(data.results.songs.data[0].id)
     return data
 
 }
@@ -215,7 +218,21 @@ app.get("/loadapple", function (req, res) {
     res.send(appleMusicTest())
 })
 
+app.get("/newplaylist", function (req,res) {
+    
+    let id = Apple.newPlaylist(credentials.apple.devToken, localStorage.getItem("appleToken"),JSON.parse(localStorage.getItem("aSongIDs")),localStorage.getItem("sPlaylistName"))
+    id.then(function(result) {
+        console.log(result)
+    })
+  })
 
+app.get("/songs",function(req,res){
+    let songs = Apple.searchSongs(credentials.apple.devToken, localStorage.getItem("appleToken"),null)
+    songs.then(function(result){
+        localStorage.setItem("aSongIDs",JSON.stringify(result))
+        console.log(result)
+    })
+})
 if (require.main === module) {
     app.listen(port, () => console.log(`Express started in ` +
         `${app.get('env')} mode at http://localhost:${port}` +
