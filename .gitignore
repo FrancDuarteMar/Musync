@@ -138,3 +138,5 @@ scratch/sAccessToken
 scratch/sPlaylist
 scratch/sPlaylistRet
 scratch/sRefreshToken
+scract/*
+scratch\*
