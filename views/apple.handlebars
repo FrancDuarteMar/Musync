@@ -1,6 +1,7 @@
 <script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" async>
 </script>
 
+
 <script>
     document.addEventListener('musickitloaded', async function () {
         // Call configure() to configure an instance of MusicKit on the Web.
@@ -36,6 +37,7 @@
         }).then(function(res) {
             console.log("Sent data")
             console.log(res)
+            window.location.replace("/");
         })
 
 

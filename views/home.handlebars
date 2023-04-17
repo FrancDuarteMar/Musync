@@ -4,11 +4,11 @@
 
 <input type="button" onclick="window.location.href='http://localhost:3000/auth/spotify';" value="Spotify Auth" />
 
-<input type="button" onclick="window.location.href='http://localhost:3000/list/spotify';" value="List Spotify" />
+<input type="button" onclick="window.location.href='http://localhost:3000/list';" value="List Spotify" />
 
 <hr>
 
-{{#if accessToken}}
+{{#if accessToksfden}}
     <h4> Spotify Tokens </h4>
 
     <h6>Access Token: <span>{{accessToken}}</span> </h6>
@@ -22,17 +22,27 @@
     <h6>Profile ID: <span>{{id}}</span></h6>
 
 <hr>
+{{/if}}
+
 <h4> Profile Data</h4>
 
-    <div id="spotify">
+    {{!-- <div id="spotify"> --}}
 
-    </div>
+    <table id="spotify">
+      <tr>
+        <th>Playlist Cover</th>
+        <th>Name</th>
+        <th>Songs</th>
+        <th>Select?</th>
+      </tr>
+
+    </table>
+    {{!-- </div> --}}
     {{profileData}}
 
 <hr>
 {{!-- <h4>Playlist Data</h4>
 {{playlistData}} --}}
-{{/if}}
 
 {{#if spotifyPlaylist}}
 <script>
@@ -43,10 +53,17 @@
         let imgUrl = elem["images"][0]["url"]
         let title = elem["name"]
         let trackCount = elem["tracks"]["total"]
-
-       
-        {{!-- document.getElementById("spotify").innerHTML += JSON.stringify(elem) + "<br>" --}}
-        document.getElementById("spotify").innerHTML +=  `<div class="container">
+        {{!-- console.log(elem["id"]) --}}
+        document.getElementById("spotify").innerHTML +=  `
+        <tr>
+            <td><img src="${imgUrl}" style="aspect-ratio:1;width:200px;"></td>
+            <td><h1>${title}</h1></td>
+            <td><p>${trackCount} Songs</p></td>
+            <td> <input type="button" onclick="window.location.href='http://localhost:3000/playlist/${elem["id"]}';" value="Select This playlist" />
+</td>
+          </tr>
+         `     
+        {{!-- document.getElementById("spotify").innerHTML +=  `<div class="container">
       
       <div class="text">
         <h1>${title}(${trackCount} Tracks)</h1>
@@ -54,7 +71,7 @@
       <div class="image">
         <img src="${imgUrl}">
       </div>
-    </div>`
+    </div>` --}}
 
     }      
 

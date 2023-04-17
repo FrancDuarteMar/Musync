@@ -1,0 +1,46 @@
+<h1>Songs</h1>
+<input type="button" onclick="window.location.href='../sync/songs/';" value="Sync Now!" />
+
+<h4> Songs Listed</h4>
+
+
+
+    <table id="spotify">
+      <tr>
+        <th>Song Title</th>
+        <th>Artist</th>
+
+        {{!-- <th>Select?</th> --}}
+      </tr>
+
+    </table>
+    {{!-- </div> --}}
+    {{profileData}}
+
+<hr>
+{{!-- <h4>Playlist Data</h4>
+{{playlistData}} --}}
+
+{{#if spotifyPlaylist}}
+<script>
+    const playlist =JSON.parse(decodeURIComponent("{{{spotifyPlaylist}}}"))
+    for(const elem of playlist){
+        let track = elem["track"]['name']
+        let artists = " "
+        for (const art of elem["track"]["artists"]) {
+            artists += art["name"]
+            artists += " "
+        }
+
+        document.getElementById("spotify").innerHTML +=  `
+        <tr>
+            <td><h1>${track}</h1></td>
+            <td><p>${artists} Songs</p></td>
+          </tr>
+         `     
+        
+
+    }      
+
+</script>
+{{/if}}
