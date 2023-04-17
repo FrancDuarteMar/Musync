@@ -1,4 +1,4 @@
-const { all } = require("../musync");
+// const { all } = require("../musync");
 
 exports.getProfile = async (accessToken) => {
     let response = await fetch('https://api.spotify.com/v1/me', {

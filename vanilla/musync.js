@@ -5,7 +5,7 @@ const Apple = require("./lib/apple")
 const expressSession = require("express-session")
 const {
     credentials
-} = require("./config")
+} = require("../config")
 const passport = require('passport')
 if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require('node-localstorage').LocalStorage;
