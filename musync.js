@@ -28,7 +28,7 @@ app.set('view engine', 'handlebars')
 app.use(express.static(__dirname + '/public'))
 app.disable("x-powered-by")
 
-localStorage.clear()
+// localStorage.clear()
 
 var authCallbackPath = '/auth/spotify/callback';
 
@@ -63,7 +63,7 @@ passport.use(
     new SpotifyStrategy({
             clientID: credentials.spotify.client_id,
             clientSecret: credentials.spotify.client_secret,
-            callbackURL: 'http://localhost:3000/auth/spotify/callback'
+            callbackURL: './auth/spotify/callback'
         },
         function (accessToken, refreshToken, expires_in, profile, done) {
             localStorage.setItem("spotify", {
@@ -73,6 +73,7 @@ passport.use(
                 "profile": profile
 
             });
+            console.log(accessToken)
             
             localStorage.setItem("sAccessToken", accessToken)
             localStorage.setItem("sRefreshToken", refreshToken)

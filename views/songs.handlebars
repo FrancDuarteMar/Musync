@@ -7,6 +7,7 @@
 
     <table id="spotify">
       <tr>
+        <th>Album Cover</th>
         <th>Song Title</th>
         <th>Artist</th>
 
@@ -26,6 +27,7 @@
     const playlist =JSON.parse(decodeURIComponent("{{{spotifyPlaylist}}}"))
     for(const elem of playlist){
         let track = elem["track"]['name']
+        let imgUrl = elem["track"]['album']["images"][0]["url"]
         let artists = " "
         for (const art of elem["track"]["artists"]) {
             artists += art["name"]
@@ -34,6 +36,7 @@
 
         document.getElementById("spotify").innerHTML +=  `
         <tr>
+            <td><img src="${imgUrl}" style="aspect-ratio:1;width:100px;"></td>
             <td><h1>${track}</h1></td>
             <td><p>${artists} Songs</p></td>
           </tr>
