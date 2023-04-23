@@ -1,0 +1,41 @@
+.imgWrap{
+    width: 100%;
+   /* height: 100%; */
+   aspect-ratio: 1/1;
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-position: center;
+}
+
+.bs{
+    /* border: 3px red dashed; */
+    border: none;
+}
+
+.header{
+    color: white;
+    font-size: 1.4rem;
+    /* vertical-align: top; */
+}
+
+.subHeader{
+    color:rgb(123, 123, 123);
+    font-size: 1rem;
+    /* margin-left: 3%; */
+    /* vertical-align: bottom; */
+}
+
+.centerContent{
+    /* vertical-align: bottom;
+    height: 100%;
+    display: table-cell */
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+
+}
+
+.playlistWrapper{
+    margin-bottom: 1rem;
+}

@@ -1,0 +1,26 @@
+h1{
+    color: #FB8500;
+
+}
+html,body{
+    background-color: #062142;
+}
+
+/* *{
+    color:white;
+} */
+#logo{
+    width:5%;
+    aspect-ratio: 1/1;
+    /* padding: none;
+    margin: none; */
+}
+#main-title{
+    color:#FB8500;
+    font-size: 2.2rem;
+}
+
+/* .no-dec a:link { text-decoration: none; }
+.no-dec a:visited { text-decoration: none; }
+.no-dec a:hover { text-decoration: none; }
+.no-dec a:active{ text-decoration: none; } */

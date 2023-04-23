@@ -28,9 +28,9 @@ app.set('view engine', 'handlebars')
 app.use(express.static(__dirname + '/public'))
 app.disable("x-powered-by")
 
-// localStorage.clear()
-
-var authCallbackPath = '/auth/spotify/callback';
+localStorage.clear()
+var redirect_uri = 'http://localhost:3000/auth/spotify/callback';
+// var authCallbackPath = '/auth/spotify/callback';
 
 app.use(expressSession({
     resave: true,
@@ -63,7 +63,7 @@ passport.use(
     new SpotifyStrategy({
             clientID: credentials.spotify.client_id,
             clientSecret: credentials.spotify.client_secret,
-            callbackURL: './auth/spotify/callback'
+            callbackURL: redirect_uri
         },
         function (accessToken, refreshToken, expires_in, profile, done) {
             localStorage.setItem("spotify", {
@@ -74,7 +74,7 @@ passport.use(
 
             });
             console.log(accessToken)
-            
+            console.log("spotify access token: "+accessToken)
             localStorage.setItem("sAccessToken", accessToken)
             localStorage.setItem("sRefreshToken", refreshToken)
             localStorage.setItem("sExpires", expires_in)
@@ -112,9 +112,9 @@ app.get("/list", function (req, res) {
                 jsonPlaylist[count] = elem
             }
         })
-        .then(
-
-            res.render("home", {
+        .then(()=>{
+            // console.log("called a playlist render...")
+            res.render("playlists", {
                 accessToken: localStorage.getItem("sAccessToken"),
                 refreshToken: localStorage.getItem("sRefreshToken"),
                 expires_in: localStorage.getItem("sExpires"),
@@ -122,7 +122,7 @@ app.get("/list", function (req, res) {
                 id: localStorage.getItem("sID"),
                 profileData: JSON.stringify((playlistSpotify[0])),
                 spotifyPlaylist: encodeURIComponent(JSON.stringify(playlistSpotify))
-            })
+            })}
         ).catch(err => {
             console.log(err);
             res.sendStatus(501);
@@ -153,8 +153,6 @@ app.get('/sync/songs/',function(req,res){
     let songs = Apple.searchSongs(credentials.apple.devToken, localStorage.getItem("appleToken"),localStorage.getItem("spotifySongs"))
     songs.then(function(result){
         localStorage.setItem("aSongIDs",JSON.stringify(result))
-        // newPlaylist (devToken, musicToken, songs, nameString) 
-        // console.log(result)
         return result
     }).then(function(result){
         localStorage.setItem('appleSongIDs',JSON.stringify(result))
@@ -188,7 +186,7 @@ app.get(
 app.post("/applelogin", function (req, res) {
     // console.log(req.body)
     localStorage.setItem("appleToken", req.body.appleToken)
-    res.sendStatus(400)
+    res.sendStatus(200)
 
 })
 app.get("/auth/apple", function (req, res) {

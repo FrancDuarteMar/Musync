@@ -1,11 +1,31 @@
+<link rel="stylesheet" href="../css/songs.css">
+
 <h1>Songs</h1>
+
 <input type="button" onclick="window.location.href='../sync/songs/';" value="Sync Now!" />
 
 <h4> Songs Listed</h4>
 
-
-
-    <table id="spotify">
+  <div id="spotify">
+      <div class="row">
+          <div class="col-md-4">
+              <h3 class="header">Album Cover</h3>
+          </div>
+          {{!-- <div class="col-md-6">
+              <h3 class="header">Song Title</h3>
+          </div> --}}
+          <div class="col-md-3">
+              <h3 class="header">Song Title</h3>
+          </div>
+          <div class="col-md-3">
+              <h3 class="header">Artist</h3>
+          </div>
+          <div class="col-md-2">
+              <h3 class="header">Duration</h3>
+          </div>
+      </div>
+  </div>
+    {{!-- <table id="spotify">
       <tr>
         <th>Album Cover</th>
         <th>Song Title</th>
@@ -14,34 +34,73 @@
         {{!-- <th>Select?</th> --}}
       </tr>
 
-    </table>
-    {{!-- </div> --}}
-    {{profileData}}
+    </table> --}}
+    {{!-- {{profileData}} --}}
 
 <hr>
-{{!-- <h4>Playlist Data</h4>
-{{playlistData}} --}}
+
 
 {{#if spotifyPlaylist}}
 <script>
-    const playlist =JSON.parse(decodeURIComponent("{{{spotifyPlaylist}}}"))
-    for(const elem of playlist){
-        let track = elem["track"]['name']
-        let imgUrl = elem["track"]['album']["images"][0]["url"]
-        let artists = " "
-        for (const art of elem["track"]["artists"]) {
-            artists += art["name"]
-            artists += " "
-        }
+  function msToMS(millis) {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+  }
 
-        document.getElementById("spotify").innerHTML +=  `
-        <tr>
-            <td><img src="${imgUrl}" style="aspect-ratio:1;width:100px;"></td>
-            <td><h1>${track}</h1></td>
-            <td><p>${artists} Songs</p></td>
-          </tr>
-         `     
-        
+  const playlist =JSON.parse(decodeURIComponent("{{{spotifyPlaylist}}}"))
+  for(const elem of playlist){
+      let track = elem["track"]['name']
+      let imgUrl = elem["track"]['album']["images"][0]["url"]
+      let artists = " "
+      let duration = msToMS(elem['track']['duration_ms'])
+      for (const art of elem["track"]["artists"]) {
+          artists += art["name"]
+          artists += " "
+      }
+      var mainDiv = $("<div>", {"class": "row songWrapper"})
+      var iconWrapper = $("<div>", {
+          "class": "col-4 fill bs"
+      }).appendTo(mainDiv)
+      var img = $("<img>", {
+          "class": "icon imgWrap",
+          "src": `${imgUrl}`
+      }).appendTo(iconWrapper)
+
+      {{!-- var titleWrapper = $("<div>", {
+          "class": "col-6 bs centerContent titleWrapper"
+      }).appendTo(mainDiv) --}}
+      var titleWrapper = $("<div>", {
+          "class": "col-3 bs centerContent titleWrapper"
+      }).appendTo(mainDiv)
+      var titleText = $(`<h3 class="header">${track}</h3>`).appendTo(
+          titleWrapper)
+      var artistWrapper = $("<div>", {
+          "class": "col-3 bs centerContent artistWrapper"
+      }).appendTo(mainDiv)
+      var artistText = $(`<h3 class="header">${artists}</h3>`)
+          .appendTo(artistWrapper)
+      {{!-- var artistText = $(`<p class="subHeader"> ${artists}</p>`)
+          .appendTo(titleWrapper) --}}
+
+
+      var durationWrapper = $("<div>", {
+          "class": "col-2 bs centerContent durationWrapper"
+      }).appendTo(mainDiv)
+    
+    var durationText = $(`<h3 class="header">${duration}</h3>`).appendTo(
+          durationWrapper)
+      $("#spotify").append(mainDiv)
+
+
+      {{!-- document.getElementById("spotify").innerHTML +=  `
+      <tr>
+          <td><img src="${imgUrl}" style="aspect-ratio:1;width:100px;"></td>
+          <td><h1>${track}</h1></td>
+          <td><p>${artists} Songs</p></td>
+        </tr>
+        `      --}}
+      
 
     }      
 
