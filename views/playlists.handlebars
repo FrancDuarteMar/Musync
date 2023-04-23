@@ -1,0 +1,65 @@
+<link rel="stylesheet" href="../css/playlists.css">
+
+<hr>
+
+<div id="spotify">
+    <div class="row">
+
+        <div class="col-md-3">
+            <h3 class="header">Playlist Cover</h3>
+        </div>
+        <div class="col-md-6">
+            <h3 class="header">Title</h3>
+        </div>
+        <div class="col-md-3">
+
+        </div>
+    </div>
+
+</div>
+<hr>
+
+{{#if spotifyPlaylist}}
+<script>
+    var bootstrap_enabled = (typeof $().modal == 'function');
+
+
+    const playlist = JSON.parse(decodeURIComponent("{{{spotifyPlaylist}}}"))
+
+    for (const elem of playlist) {
+        let imgUrl = elem["images"][0]["url"]
+        let title = elem["name"]
+        let trackCount = elem["tracks"]["total"]
+
+        var mainDiv = $("<div>", {
+            id: `${elem["id"]}`,
+            "class": "row playlistWrapper"
+        })
+        var iconWrapper = $("<div>", {
+            "class": "col-3 fill bs"
+        }).appendTo(mainDiv)
+        var img = $("<img>", {
+            "class": "icon imgWrap",
+            "src": `${imgUrl}`
+        }).appendTo(iconWrapper)
+        var titleWrapper = $("<div>", {
+            "class": "col-6 bs centerContent titleWrapper"
+        }).appendTo(mainDiv)
+        var titleText = $(`<h3 class="header">${title}</h3>`).appendTo(
+            titleWrapper)
+        var songText = $(`<p class="subHeader"> ${trackCount} songs</p>`)
+            .appendTo(titleWrapper)
+        var submitWrapper = $("<div>", {
+            "class": "col-3 bs centerContent buttonWrapper"
+        }).appendTo(mainDiv)
+        var submit = $(
+            `<input type="button" onclick="window.location.href='./playlist/${elem["id"]}';" value="Select This playlist" />`
+            ).appendTo(submitWrapper)
+
+
+        $("#spotify").append(mainDiv)
+
+
+    }
+</script>
+{{/if}}
