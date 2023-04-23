@@ -138,7 +138,7 @@ scratch/sAccessToken
 scratch/sPlaylist
 scratch/sPlaylistRet
 scratch/sRefreshToken
-scract/*
+scratch/*
 scratch\*
 *.com%2Fplaylist%2F0zi3jm9as2u0q0nOGJC2KC
 scratch/appleToken
@@ -150,3 +150,5 @@ scratch/sPlaylistAll
 scratch/sRefreshToken
 scratch/sSongList
 scratch/sSongsPlaylist
+scratch
+/scratch
