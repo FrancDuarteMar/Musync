@@ -39,3 +39,9 @@
 .songWrapper{
     margin-bottom: 1rem;
 }
+
+#album-title{
+    color:#FB8500;
+    font-size: 1.9rem;
+    text-decoration: underline;
+}

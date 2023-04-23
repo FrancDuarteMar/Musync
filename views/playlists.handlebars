@@ -1,27 +1,28 @@
 <link rel="stylesheet" href="../css/playlists.css">
 
-<hr>
-
 <div id="spotify">
     <div class="row">
 
-        <div class="col-md-3">
+        <div class="col-3 bs">
             <h3 class="header">Playlist Cover</h3>
         </div>
-        <div class="col-md-6">
+        <div class="col-6 bs " >
             <h3 class="header">Title</h3>
         </div>
-        <div class="col-md-3">
+        <div class="col-3 bs">
 
         </div>
     </div>
+   <div class="row">
+        <div class="col-12">
+         <hr class="headerHR">
+
+        </div>
 
 </div>
-<hr>
 
 {{#if spotifyPlaylist}}
 <script>
-    var bootstrap_enabled = (typeof $().modal == 'function');
 
 
     const playlist = JSON.parse(decodeURIComponent("{{{spotifyPlaylist}}}"))
@@ -53,7 +54,7 @@
             "class": "col-3 bs centerContent buttonWrapper"
         }).appendTo(mainDiv)
         var submit = $(
-            `<input type="button" onclick="window.location.href='./playlist/${elem["id"]}';" value="Select This playlist" />`
+            `<input type="button" onclick="window.location.href='../playlist/${elem["id"]}&${encodeURIComponent(elem["name"])}';" value="Sync!" />`
             ).appendTo(submitWrapper)
 
 

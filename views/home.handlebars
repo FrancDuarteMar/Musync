@@ -1,10 +1,25 @@
 <h1>test</h1>
-
+<link rel="stylesheet" href="./css/home.css">
 <a href=""></a>
 
-<input type="button" onclick="window.location.href='./auth/spotify';" value="Spotify Auth" />
+{{#if auth}}
+<input type="button" onclick="window.location.href='./auth/spotify';"
+    value="Spotify Auth" />
+{{else}}
 
-<input type="button" onclick="window.location.href='./list';" value="List Spotify" />
+<input type="button" onclick="window.location.href='./playlists';"
+    value="List Spotify" />
+{{/if}}
 
-<hr>
+<div id="finished" class="overlay">
+    <div class="popup">
+        <h2>Sync Complete!</h2>
+        <a class="close" href="#">&times;</a>
+        <div class="content">
+            <p>Thanks for using this project!</p>
+            <a href="https://music.apple.com/library/playlist/{{newID}}" target="_blank" >Access your new playlist here!</a>
+        </div>
+    </div>
+</div>
+
 

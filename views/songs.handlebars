@@ -1,43 +1,46 @@
 <link rel="stylesheet" href="../css/songs.css">
 
-<h1>Songs</h1>
+<h2 id="album-title">
+    {{{name}}}
+</h2>
 
-<input type="button" onclick="window.location.href='../sync/songs/';" value="Sync Now!" />
+{{!-- </div> --}}
+<div class="row buttons">
+    <div class="col-2">
+        <input id="back-button" type="button" onclick="window.location.href='../playlists/';" value="&#8592; Playlists" />
+    </div>
+    <div class="col-2 offset-8">
+        <input id="sync-button"type="button" onclick="window.location.href='../sync/songs/';" value="Sync Now!" />
+    </div>
+</div>
 
-<h4> Songs Listed</h4>
 
   <div id="spotify">
       <div class="row">
-          <div class="col-md-4">
+          <div class="col-4">
               <h3 class="header">Album Cover</h3>
           </div>
           {{!-- <div class="col-md-6">
               <h3 class="header">Song Title</h3>
           </div> --}}
-          <div class="col-md-3">
-              <h3 class="header">Song Title</h3>
+          <div class="col-3">
+              <h3 class="header">Title</h3>
           </div>
-          <div class="col-md-3">
+          <div class="col-3">
               <h3 class="header">Artist</h3>
           </div>
-          <div class="col-md-2">
+          <div class="col-2">
               <h3 class="header">Duration</h3>
           </div>
       </div>
+      <div class="row">
+        <div class="col-12">
+         <hr class="headerHR">
+
+        </div>
+      </div>
   </div>
-    {{!-- <table id="spotify">
-      <tr>
-        <th>Album Cover</th>
-        <th>Song Title</th>
-        <th>Artist</th>
 
-        {{!-- <th>Select?</th> --}}
-      </tr>
-
-    </table> --}}
-    {{!-- {{profileData}} --}}
-
-<hr>
 
 
 {{#if spotifyPlaylist}}
@@ -91,17 +94,6 @@
     var durationText = $(`<h3 class="header">${duration}</h3>`).appendTo(
           durationWrapper)
       $("#spotify").append(mainDiv)
-
-
-      {{!-- document.getElementById("spotify").innerHTML +=  `
-      <tr>
-          <td><img src="${imgUrl}" style="aspect-ratio:1;width:100px;"></td>
-          <td><h1>${track}</h1></td>
-          <td><p>${artists} Songs</p></td>
-        </tr>
-        `      --}}
-      
-
     }      
 
 </script>

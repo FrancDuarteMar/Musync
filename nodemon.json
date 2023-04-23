@@ -1,0 +1,7 @@
+{
+    "ext": "*",
+    "ignore": [
+        "./scratch/*",
+        "scratch/*"
+      ]
+}

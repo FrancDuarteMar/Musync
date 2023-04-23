@@ -1,5 +1,4 @@
 const express = require("express")
-const handlers = require("./lib/handlers")
 const Spotify = require("./lib/spotify")
 const Apple = require("./lib/apple")
 const expressSession = require("express-session")
@@ -36,10 +35,8 @@ app.disable("x-powered-by")
 
 app.use(passport.initialize());
 app.use(passport.session());
-localStorage.clear()
+// localStorage.clear()
 var redirect_uri = 'http://localhost:3000/auth/spotify/callback';
-// var authCallbackPath = '/auth/spotify/callback';
-
 
 app.engine('handlebars', expressHandlebars({
     defaultLayout: 'main',
@@ -68,21 +65,15 @@ passport.use(
             callbackURL: redirect_uri
         },
         function (accessToken, refreshToken, expires_in, profile, done) {
-            localStorage.setItem("spotify", {
-                "accessToken": accessToken,
-                "refreshToken": refreshToken,
-                "expires": expires_in,
-                "profile": profile
 
-            });
-            console.log(accessToken)
-            console.log("spotify access token: "+accessToken)
+            // console.log(accessToken)
+            // console.log("spotify access token: "+accessToken)
             localStorage.setItem("sAccessToken", accessToken)
             localStorage.setItem("sRefreshToken", refreshToken)
             localStorage.setItem("sExpires", expires_in)
             localStorage.setItem("sProfile", JSON.stringify(profile))
-            localStorage.setItem('sIDID',profile["id"])
-            
+            localStorage.setItem('sIDID', profile["id"])
+
             process.nextTick(function () {
                 return done(null, profile);
             });
@@ -91,69 +82,101 @@ passport.use(
     )
 );
 
-
-
-app.get('/', handlers.home)
-
-app.get("/set-profile",function(req,res){
-
-    res.cookie("appleToken",localStorage.getItem("appleToken"))
-    res.cookie("sAccessToken",localStorage.getItem('sAccessToken'))
-    res.cookie("sID",localStorage.getItem("sIDID"))
-    localStorage.clear()
-
-    // res.cookie("")
-    // res.send("cookie set")
-    res.redirect("/list")
-
+app.get('/logout', function (req, res) {
+    req.session.destroy(function (err) {
+        res.redirect('/'); //Inside a callback… bulletproof!
+    });
 })
 
-app.get("/list", function (req, res) {
+
+app.get('/', function (req, res) {
+    console.log("AUTH INFO: " + req.isAuthenticated())
+    if (req.isAuthenticated()) {
+        res.render("home", {
+            newID: req.cookies["aPlaylist"]
+        })
+    } else {
+        res.render("home", {
+            auth: true,
+            newID: req.cookies["aPlaylist"]
+        })
+    }
+
+})
+app.get('/finished', function (req, res) {
+    res.render("home", {
+        newID: req.cookies["aPlaylist"]
+    })
+})
+
+app.get("/set-profile", function (req, res) {
+
+    res.cookie("appleToken", localStorage.getItem("appleToken"))
+    res.cookie("sAccessToken", localStorage.getItem('sAccessToken'))
+    res.cookie("sID", localStorage.getItem("sIDID"))
+
+    localStorage.removeItem("appleToken")
+    localStorage.removeItem("sAccessToken")
+    localStorage.removeItem("sRefreshToken")
+    localStorage.removeItem("sExpires")
+    localStorage.removeItem("sProfile")
+    localStorage.removeItem('sIDID')
+
+    res.redirect("/playlists")
+})
+
+app.get("/playlists", function (req, res) {
     // const spotifyData = await getProfile(localStorage.getItem("sAccessToken"))
 
-    let playlists = Spotify.getPlaylists(req.cookies["sAccessToken"], req.cookies["sID"],playlistSpotify)
-    playlists.then(()=>{
-        localStorage.setItem(`${req.cookies["sID"]}-playlistArr`,JSON.stringify(playlistSpotify))
+    let playlists = Spotify.getPlaylists(req.cookies["sAccessToken"], req.cookies["sID"], playlistSpotify)
+    playlists.then(() => {
+        localStorage.setItem(`${req.cookies["sID"]}-playlistArr`, JSON.stringify(playlistSpotify))
         res.render("playlists", {
-                spotifyPlaylist: encodeURIComponent(localStorage.getItem(`${req.cookies["sID"]}-playlistArr`))
+            spotifyPlaylist: encodeURIComponent(localStorage.getItem(`${req.cookies["sID"]}-playlistArr`))
 
-            })}
-        ).catch(err => {
-            console.log(err);
-            res.sendStatus(501);
         })
+    }).catch(err => {
+        console.log(err);
+        res.sendStatus(501);
+    })
 })
 
-app.get("/playlist/:id",function (req, res) {
-    // console.log("choice id is " + req.params.id);
-    let songs=[]
-    localStorage.setItem(`${req.cookies['sID']}-spotifyPlaylistID`,req.params.id)
-    let results = Spotify.getPlaylistSongs(req.cookies['sID'],req.cookies['sAccessToken'],req.params.id,songs)
-    results.then(function(resData){
+app.get("/playlist/:playlistID&:title", function (req, res) {
+    // console.log("choice id is " + req.params.playlistID);
+    // console.log("Title is :"+decodeURIComponent(req.params.title))
+    let songs = []
+    localStorage.setItem(`${req.cookies['sID']}-spotifyPlaylistID`, req.params.playlistID)
+    let results = Spotify.getPlaylistSongs(req.cookies['sID'], req.cookies['sAccessToken'], req.params.playlistID, songs)
+    results.then(function (resData) {
 
-        localStorage.setItem(`${req.cookies['sID']}-spotifySongs`,JSON.stringify(resData))
-        res.render('songs',{
+        localStorage.setItem(`${req.cookies['sID']}-spotifySongs`, JSON.stringify(resData))
+        res.render('songs', {
             spotifyPlaylist: encodeURIComponent(JSON.stringify(resData)),
-            id:req.params.id
+            id: req.params.playlistID,
+            name: decodeURIComponent(req.params.title)
 
         })
     })
 
-  }
-)
+})
 
-app.get('/sync/songs/',function(req,res){
+app.get('/sync/songs/', function (req, res) {
     let uID = req.cookies['sID']
-    let songs = Apple.searchSongs(credentials.apple.devToken, req.cookies["appleToken"],localStorage.getItem(`${uID}-spotifySongs`))
-    songs.then(function(result){
-        localStorage.setItem(`${uID}-aSongIDs`,JSON.stringify(result))
+    let songs = Apple.searchSongs(credentials.apple.devToken, req.cookies["appleToken"], localStorage.getItem(`${uID}-spotifySongs`))
+    songs.then(function (result) {
+        localStorage.setItem(`${uID}-aSongIDs`, JSON.stringify(result))
         return result
-    }).then(function(result){
-        localStorage.setItem(`${uID}-appleSongIDs`,JSON.stringify(result))
-        let name = Spotify.getName(req.cookies['sAccessToken'],localStorage.getItem(`${uID}-spotifyPlaylistID`))
-        name.then(function(resName){
-            Apple.newPlaylist(credentials.apple.devToken, req.cookies["appleToken"],JSON.parse(localStorage.getItem(`${uID}-appleSongIDs`)),resName)
-            res.render("done")
+    }).then(function (result) {
+        localStorage.setItem(`${uID}-appleSongIDs`, JSON.stringify(result))
+        let name = Spotify.getName(req.cookies['sAccessToken'], localStorage.getItem(`${uID}-spotifyPlaylistID`))
+        name.then(function (resName) {
+            let newPlaylist = Apple.newPlaylist(credentials.apple.devToken, req.cookies["appleToken"], JSON.parse(localStorage.getItem(`${uID}-appleSongIDs`)), resName)
+            newPlaylist.then(function (playlist) {
+                // console.log(playlist[0]["id"])
+                res.cookie("aPlaylist", playlist[0]["id"])
+                res.redirect("/#finished")
+
+            })
         })
     })
 })
@@ -173,46 +196,34 @@ app.get(
     '/auth/spotify',
     passport.authenticate('spotify', {
         scope: ['user-read-email', 'user-read-private', "playlist-read-private", 'user-library-read'],
-        showDialog: true,
+        showDialog: false,
     })
 );
 
 
 app.post("/applelogin", function (req, res) {
-    // console.log(req.body)
     localStorage.setItem("appleToken", req.body.appleToken)
     res.sendStatus(200)
 
 })
 app.get("/auth/apple", function (req, res) {
-
-    // console.log("Req: "+req.body["appleToken"])
-
     res.render("apple", {
         devToken: credentials.apple.devToken
     })
-    // res.redirect('/');
-
 })
 
 
-app.get("/loadapple", function (req, res) {
-
-    res.send(appleMusicTest())
-})
-
-app.get("/newplaylist", function (req,res) {
-    
-    let id = Apple.newPlaylist(credentials.apple.devToken, localStorage.getItem("appleToken"),JSON.parse(localStorage.getItem("aSongIDs")),localStorage.getItem("sPlaylistName"))
-    id.then(function(result) {
+app.get("/newplaylist", function (req, res) {
+    let id = Apple.newPlaylist(credentials.apple.devToken, localStorage.getItem("appleToken"), JSON.parse(localStorage.getItem("aSongIDs")), localStorage.getItem("sPlaylistName"))
+    id.then(function (result) {
         console.log(result)
     })
-  })
+})
 
-app.get("/songs",function(req,res){
-    let songs = Apple.searchSongs(credentials.apple.devToken, localStorage.getItem("appleToken"),null)
-    songs.then(function(result){
-        localStorage.setItem("aSongIDs",JSON.stringify(result))
+app.get("/songs", function (req, res) {
+    let songs = Apple.searchSongs(credentials.apple.devToken, localStorage.getItem("appleToken"), null)
+    songs.then(function (result) {
+        localStorage.setItem("aSongIDs", JSON.stringify(result))
         console.log(result)
     })
 })
@@ -228,27 +239,5 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect('/login');
-}
-async function appleMusicTest() {
-    var response = await fetch(`https://api.music.apple.com/v1/catalog/us/search?types=songs&term=Soledad+y+el+mar`, {
-        headers: {
-            Authorization: 'Bearer ' + credentials.apple.devToken,
-            "Media-User-Token": localStorage.getItem("appleToken")
-        }
-    })
-    let thisResp = await response
-    // let item = await thisResp.text() 
-    let data = await thisResp.json();
-    // playlists.push(data['items'])
-    // for (const elem of data['items']) {
-    //     playlists.push(elem)
-    //     playlistSpotify.push(elem)
-    // }
-
-    console.log(data.results.songs.data[0])
-
-    // console.log(data.results.songs.data[0].id)
-    return data
-
+    res.redirect('/auth/spotify');
 }
