@@ -127,7 +127,7 @@ app.get("/set-profile", function (req, res) {
 
 app.get("/playlists", function (req, res) {
     // const spotifyData = await getProfile(localStorage.getItem("sAccessToken"))
-
+    console.log("Requested playlists")
     let playlists = Spotify.getPlaylists(req.cookies["sAccessToken"], req.cookies["sID"], playlistSpotify)
     playlists.then(() => {
         localStorage.setItem(`${req.cookies["sID"]}-playlistArr`, JSON.stringify(playlistSpotify))
