@@ -1,3 +1,25 @@
+.smallHeading{
+    color: white;
+    font-family: 'Exo 2', sans-serif;
+    font-size: clamp(.8rem, 1.6rem, 3.5rem);
+    font-weight: 300;
+
+}
+
+
+.cenBtn{
+    text-align:center;
+}
+
+.signin{
+
+    background-color:#FB8500;
+    font-family: 'Exo 2', sans-serif;
+    border: none;
+    font-size: 1.4rem;
+    width: 100%;
+
+}
 .overlay {
     position: fixed;
     top: 0;
@@ -43,7 +65,7 @@
 }
 
 .popup .close:hover {
-    color:#062142;
+    color: #062142;
     ;
 }
 
@@ -61,3 +83,30 @@
         width: 70%;
     }
 }
+
+.gradient {
+    --bg-size: 300%;
+    --color-two: hsl(353, 95%, 59%);
+    --color-one: hsl(141, 73%, 42%);
+    font-family: 'Kanit', sans-serif;
+    font-size: clamp(1.8rem, 4.5rem, 6rem);
+    /* font-size: 5.3rem; */
+    background: linear-gradient(90deg,
+            var(--color-one),
+            var(--color-two),
+            var(--color-one)) 0 0 / var(--bg-size) 100%;
+    color: transparent;
+    background-clip: text;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .gradient {
+      animation: move-bg 10s linear infinite;
+    }
+    @keyframes move-bg {
+      to {
+        background-position: var(--bg-size) 0;
+      }
+    }
+  }
+  

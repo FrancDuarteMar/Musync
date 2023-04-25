@@ -1,15 +1,48 @@
-<h1>test</h1>
 <link rel="stylesheet" href="./css/home.css">
-<a href=""></a>
 
-{{#if auth}}
-<input type="button" onclick="window.location.href='./auth/spotify';"
-    value="Spotify Auth" />
-{{else}}
 
-<input type="button" onclick="window.location.href='./playlists';"
-    value="List Spotify" />
-{{/if}}
+<div class="row">
+    <div class="col-10 offset-1">
+        <h1 class="gradient">
+            Spotify
+            &#8594;
+            Apple Music
+        </h1>
+        <br>
+        
+        <div class="row">
+            <div class="col-8 offset-1">
+                <h1 class="smallHeading">
+                    The syncing utility allowing you to switch from spotify to
+                    apple music with ease.
+
+                </h1>
+            </div>
+        </div>
+<br>
+<br>
+
+        <div class="row">
+            <div class="col-10">
+                <div class="cenBtn">
+                    <input type="button" class="signin"
+                    onclick="window.location.href='./auth/spotify';"
+                    value="Sign In" />
+                </div>
+                    </div>
+                </div>
+
+                
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
 
 <div id="finished" class="overlay">
     <div class="popup">
@@ -17,9 +50,8 @@
         <a class="close" href="#">&times;</a>
         <div class="content">
             <p>Thanks for using this project!</p>
-            <a href="https://music.apple.com/library/playlist/{{newID}}" target="_blank" >Access your new playlist here!</a>
+            <a href="https://music.apple.com/library/playlist/{{newID}}"
+                target="_blank">Access your new playlist here!</a>
         </div>
     </div>
 </div>
-
-
