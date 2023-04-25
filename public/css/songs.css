@@ -44,4 +44,43 @@
     color:#FB8500;
     font-size: 1.9rem;
     text-decoration: underline;
+    font-family: 'Kanit', sans-serif;
+    /* font-family: 'Noto Sans KR', sans-serif; */
+    font-weight: 200;
+
+}
+
+
+
+.header{
+    /* font-family:  'Abel', sans-serif; */
+    /* color:red; */
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 400;
+    /* font-family: 'Raleway', sans-serif; */
+    /* font-family: 'Roboto Mono', monospace; */
+}
+
+.headings{
+    font-family: "Exo 2", sans-serif;
+    font-weight: 600;
+}
+
+input {
+    background-color: #FB8500;
+    border: none;
+    font-family: 'Kanit', sans-serif;
+    font-size: 1.3rem;
+    cursor:pointer;
+    color: white;
+}
+
+
+.bar{
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+}
+.progress-bar{
+    background-color:#FB8500
 }

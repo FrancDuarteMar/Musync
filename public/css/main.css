@@ -33,3 +33,21 @@ html,body{
     margin-top: 0 !important;
 }
 
+.imgWrap{
+    width: 100%;
+   /* height: 100%; */
+   aspect-ratio: 1/1;
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-position: center;
+}
+
+.smallText{
+    color: white;
+    font-size: 1.2rem;
+}
+
+#main-title{
+    font-family: 'Bruno Ace', cursive;
+}
+

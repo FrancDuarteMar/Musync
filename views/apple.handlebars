@@ -1,8 +1,41 @@
 <script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" async>
 </script>
 
+<div id="appleWarning">
+<div class="row">
+    <div class="offset-5 col-2">
+        <div class="imgWrap">
+        <button type="button" class="appleLogo" onClick="window.location.reload();"><img class="imgWrap"src="../images/Apple_Music_icon.svg" alt="">
+</button>
 
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="offset-3 col-6">
+        <p class="smallText">
+            <br>
+            If you have pop-ups disabled, please enable them from your address bar. 
+            <br>
+            <br> 
+            The Apple Music authorization will open in a new window and you will be redirected to your playlists when authorization is complete. 
+            <br>
+            <br>
+            Click the Apple Music Logo if you're unable to see the Apple Login window or are not redirected.  
+        </p>
+    </div>
+</div>
+</div>
 <script>
+    function showWarning() {
+    setTimeout(
+        function() {
+            document.getElementById('appleWarning').style.display='inline';
+        }, 5000);
+}
+
+    showWarning()
     document.addEventListener('musickitloaded', async function () {
         // Call configure() to configure an instance of MusicKit on the Web.
         try {
@@ -31,12 +64,27 @@
                 appleToken:token
             })
         }).then(function(res) {
-            console.log("Sent data")
-            console.log(res)
-            {{!-- window.location.replace("/list"); --}}
+            {{!-- console.log("Sent data") --}}
+            {{!-- console.log(res) --}}
             window.location.replace("/set-profile")
         })
 
 
     });
 </script>
+
+<style>
+    .smallText{
+        font-family: 'Exo 2', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 300;
+    }
+    #appleWarning{
+        display:none;
+    }
+    .appleLogo{
+        background: none;
+        border:none;
+        cursor:pointer;
+    }
+</style>
