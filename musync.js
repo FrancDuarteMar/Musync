@@ -36,7 +36,8 @@ app.disable("x-powered-by")
 app.use(passport.initialize());
 app.use(passport.session());
 // localStorage.clear()
-var redirect_uri = 'http://localhost:3000/auth/spotify/callback';
+// var redirect_uri = 'http://localhost:3000/auth/spotify/callback';
+var redirect_uri = "http://musync.franciscoduartem.com/auth/spotify/callback"
 
 app.engine('handlebars', expressHandlebars({
     defaultLayout: 'main',
@@ -184,7 +185,7 @@ app.get('/sync/songs/', function (req, res) {
 app.get(
     '/auth/spotify/callback',
     passport.authenticate('spotify', {
-        failureRedirect: '/login'
+        failureRedirect: '/auth/spotify'
     }),
     function (req, res) {
         // res.cookie("sID",localStorage.getItem("sID"))
