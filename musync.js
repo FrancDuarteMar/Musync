@@ -10,7 +10,6 @@ if (typeof localStorage === "undefined" || localStorage === null) {
     var LocalStorage = require('node-localstorage').LocalStorage;
     localStorage = new LocalStorage('./scratch');
 }
-let playlistSpotify = []
 const {
     engine: expressHandlebars
 } = require("express-handlebars")
@@ -100,19 +99,16 @@ app.get('/logout', function (req, res) {
 })
 
 app.get("/unauthorized", function(req,res){
-    res.render("unauth")
+    res.render("unauth",{unauth:true})
 })
 
 app.get('/', function (req, res) {
     // console.log("AUTH INFO: " + req.isAuthenticated())
-    res.render("home")
+    res.render("home",{newID: req.cookies["aPlaylist"]})
 
 })
-app.get('/finished', function (req, res) {
-    res.render("home", {
-        newID: req.cookies["aPlaylist"]
-    })
-})
+
+
 
 app.get("/set-profile", function (req, res) {
 
@@ -134,9 +130,10 @@ app.get("/playlists",isAuthenticated, function (req, res) {
     console.log("Cookie ID: "+ req.cookies["sID"])
     // const spotifyData = await getProfile(localStorage.getItem("sAccessToken"))
     console.log("Requested playlists")
-    let playlists = Spotify.getPlaylists(req.cookies["sAccessToken"], req.cookies["sID"], playlistSpotify)
+    let thisPlaylists = []
+    let playlists = Spotify.getPlaylists(req.cookies["sAccessToken"], req.cookies["sID"], thisPlaylists)
     playlists.then(() => {
-        localStorage.setItem(`${req.cookies["sID"]}-playlistArr`, JSON.stringify(playlistSpotify))
+        localStorage.setItem(`${req.cookies["sID"]}-playlistArr`, JSON.stringify(thisPlaylists))
         res.render("playlists", {
             spotifyPlaylist: encodeURIComponent(localStorage.getItem(`${req.cookies["sID"]}-playlistArr`))
 
@@ -202,7 +199,7 @@ app.get(
     '/auth/spotify',
     passport.authenticate('spotify', {
         scope: ['user-read-email', 'user-read-private', "playlist-read-private", 'user-library-read'],
-        showDialog: false,
+        showDialog: true,
     })
 );
 
@@ -233,17 +230,15 @@ app.get("/songs", function (req, res) {
         console.log(result)
     })
 })
+
+app.get('*', function(req, res){
+    res.render("unauth")
+  });
+
 if (require.main === module) {
     app.listen(port, () => console.log(`Express started in ` +
         `${app.get('env')} mode at http://localhost:${port}` +
         `; press Ctrl-C to terminate.`))
 } else {
     module.exports = app
-}
-
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/auth/spotify');
 }
