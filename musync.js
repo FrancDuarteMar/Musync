@@ -36,8 +36,8 @@ app.disable("x-powered-by")
 app.use(passport.initialize());
 app.use(passport.session());
 // localStorage.clear()
-// var redirect_uri = 'http://localhost:3000/auth/spotify/callback';
-var redirect_uri = "http://musync.franciscoduartem.com/auth/spotify/callback"
+var redirect_uri = 'http://localhost:3000/auth/spotify/callback';
+// var redirect_uri = "http://musync.franciscoduartem.com/auth/spotify/callback"
 
 app.engine('handlebars', expressHandlebars({
     defaultLayout: 'main',
@@ -67,8 +67,6 @@ passport.use(
         },
         function (accessToken, refreshToken, expires_in, profile, done) {
 
-            // console.log(accessToken)
-            // console.log("spotify access token: "+accessToken)
             localStorage.setItem("sAccessToken", accessToken)
             localStorage.setItem("sRefreshToken", refreshToken)
             localStorage.setItem("sExpires", expires_in)
@@ -83,6 +81,18 @@ passport.use(
     )
 );
 
+function isAuthenticated(req, res, next) {
+    let spotifyCookie = req.cookies["sAccessToken"]
+    let appleCookie = req.cookies["appleToken"]
+
+    if (req.isAuthenticated() &&( spotifyCookie!= undefined || spotifyCookie == "j:null") && (appleCookie!= undefined || appleCookie == "j:null")){
+        return next();
+    }
+  
+    res.redirect('/');
+  }
+
+
 app.get('/logout', function (req, res) {
     req.session.destroy(function (err) {
         res.redirect('/'); //Inside a callback… bulletproof!
@@ -91,17 +101,8 @@ app.get('/logout', function (req, res) {
 
 
 app.get('/', function (req, res) {
-    console.log("AUTH INFO: " + req.isAuthenticated())
-    if (req.isAuthenticated()) {
-        res.render("home", {
-            newID: req.cookies["aPlaylist"]
-        })
-    } else {
-        res.render("home", {
-            auth: true,
-            newID: req.cookies["aPlaylist"]
-        })
-    }
+    // console.log("AUTH INFO: " + req.isAuthenticated())
+    res.render("home")
 
 })
 app.get('/finished', function (req, res) {
@@ -126,7 +127,8 @@ app.get("/set-profile", function (req, res) {
     res.redirect("/playlists")
 })
 
-app.get("/playlists", function (req, res) {
+app.get("/playlists",isAuthenticated, function (req, res) {
+    console.log("Cookie ID: "+ req.cookies["sID"])
     // const spotifyData = await getProfile(localStorage.getItem("sAccessToken"))
     console.log("Requested playlists")
     let playlists = Spotify.getPlaylists(req.cookies["sAccessToken"], req.cookies["sID"], playlistSpotify)
@@ -142,7 +144,7 @@ app.get("/playlists", function (req, res) {
     })
 })
 
-app.get("/playlist/:playlistID&:title", function (req, res) {
+app.get("/playlist/:playlistID&:title", isAuthenticated, function (req, res) {
     // console.log("choice id is " + req.params.playlistID);
     // console.log("Title is :"+decodeURIComponent(req.params.title))
     let songs = []
@@ -161,7 +163,7 @@ app.get("/playlist/:playlistID&:title", function (req, res) {
 
 })
 
-app.get('/sync/songs/', function (req, res) {
+app.get('/sync/songs/', isAuthenticated, function (req, res) {
     let uID = req.cookies['sID']
     let songs = Apple.searchSongs(credentials.apple.devToken, req.cookies["appleToken"], localStorage.getItem(`${uID}-spotifySongs`))
     songs.then(function (result) {
