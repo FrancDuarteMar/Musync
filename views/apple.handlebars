@@ -47,7 +47,7 @@
                 },
             });
         } catch (err) {
-            // Handle configuration error
+            window.location.reload()
         }
 
         // MusicKit instance is available
@@ -64,8 +64,7 @@
                 appleToken:token
             })
         }).then(function(res) {
-            {{!-- console.log("Sent data") --}}
-            {{!-- console.log(res) --}}
+
             window.location.replace("/set-profile")
         })
 

@@ -89,8 +89,8 @@ function isAuthenticated(req, res, next) {
         return next();
     }
   
-    res.redirect('/');
-  }
+    res.redirect('/unauthorized');
+}
 
 
 app.get('/logout', function (req, res) {
@@ -99,6 +99,9 @@ app.get('/logout', function (req, res) {
     });
 })
 
+app.get("/unauthorized", function(req,res){
+    res.render("unauth")
+})
 
 app.get('/', function (req, res) {
     // console.log("AUTH INFO: " + req.isAuthenticated())
