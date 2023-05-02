@@ -51,3 +51,24 @@ html,body{
     font-family: 'Bruno Ace', cursive;
 }
 
+.footer {
+    position:inherit;
+    bottom:0;
+    left:0;
+    width:100%;
+
+  }
+
+.footer-hr{
+    background-color: white;
+    height:2px;
+    line-height: 2px;
+    border: none;
+    width: 100%;
+    /* padding-top: 5% !important; */
+    margin-top: 5% !important;
+}
+
+.menu{
+    color:#FB8500
+  }
