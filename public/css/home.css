@@ -1,4 +1,4 @@
-.smallHeading{
+.smallHeading {
     color: white;
     font-family: 'Exo 2', sans-serif;
     font-size: clamp(.8rem, 1.6rem, 3.5rem);
@@ -7,13 +7,25 @@
 }
 
 
-.cenBtn{
-    text-align:center;
+.cenBtn {
+    text-align: center;
 }
 
-.signin{
+#gdf {
+    visibility: hidden;
+    display: none;
+    /* opacity: 0; */
+}
 
-    background-color:#FB8500;
+#gdf:target {
+    visibility: visible;
+    /* display:block; */
+    /* opacity: 1;s */
+}
+
+.signin {
+
+    background-color: #FB8500;
     font-family: 'Exo 2', sans-serif;
     border: none;
     font-size: 1.7rem;
@@ -21,6 +33,7 @@
     color: white;
 
 }
+
 .overlay {
     position: fixed;
     top: 0;
@@ -30,11 +43,13 @@
     background: #0e51a265;
     transition: opacity 500ms;
     visibility: hidden;
+    display: none;
     opacity: 0;
 }
 
 .overlay:target {
     visibility: visible;
+    display: block;
     opacity: 1;
 }
 
@@ -89,14 +104,14 @@
     --bg-size: 300%;
     --color-two: hsl(353, 95%, 59%);
     --color-one: hsl(141, 73%, 42%);
-    
+
     font-family: 'Kanit', sans-serif;
     font-size: clamp(1.8rem, 4.5rem, 6rem);
 
     background: linear-gradient(-90deg,
             var(--color-one),
             var(--color-two),
-            var(--color-one)) 0 0 / var(--bg-size) 100%; 
+            var(--color-one)) 0 0 / var(--bg-size) 100%;
 
     color: transparent;
     background-clip: text;
@@ -105,12 +120,17 @@
 
 @media (prefers-reduced-motion: no-preference) {
     .gradient {
-      animation: move-bg 10s linear infinite;
+        animation: move-bg 10s linear infinite;
     }
+
     @keyframes move-bg {
-      to {
-        background-position: var(--bg-size) 0;
-      }
+        to {
+            background-position: var(--bg-size) 0;
+        }
     }
-  }
-  
+}
+
+.footer {
+    position:absolute !important;
+
+}

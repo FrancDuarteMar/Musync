@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="./css/home.css">
-
+<script src="https://unpkg.com/js-alert/dist/jsalert.min.js"></script>
 
 <div class="row">
     <div class="col-10 offset-2">
@@ -19,42 +19,53 @@
                 </h1>
             </div>
         </div>
-<br>
-<br>
+        <br>
+        <br>
 
         <div class="row">
             <div class="col-10">
                 <div class="cenBtn">
                     <input type="button" class="signin"
-                    onclick="window.location.href='./auth/spotify';"
-                    value="Sign In" />
+                        onclick="window.location.href='./auth/spotify';"
+                        value="Sign In" />
                 </div>
-                    </div>
-                </div>
-
-                
             </div>
-
         </div>
+
+
     </div>
+
+</div>
+</div>
 </div>
 
 
 
 
+<script>
 
 
-<div id="finished" class="overlay">
-    <div class="popup">
-        <h2>Sync Complete!</h2>
-        <a class="close" href="#">&times;</a>
-        <div class="content">
-            <p>Thanks for using this project!</p>
-            <a href="https://music.apple.com/library/playlist/{{newID}}"
-                target="_blank">Access your new playlist here!</a>
-        </div>
-    </div>
-</div>
+    $(window).on("load", function () {
+
+        if (location.hash == "#finished") {
+        const alert = JSAlert.alert(
+        "Congrats! Your playlist was created successfully",
+        "Playlist Created Successfully!", JSAlert.Icons.Success)
+
+    alert.addButton("Open Playlist").then(function () {
+
+        window.open(
+            "https://music.apple.com/library/playlist/{{newID}}",
+            '_blank').focus();
+        window.location.href = "../"
+
+    });
+            console.log("Hashed")
+            console.log("Location: " + location.hash)
 
 
+            alert.show()
 
+        }
+    })
+</script>
